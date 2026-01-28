@@ -148,7 +148,7 @@ select.form-select {
   background:#f4f4f4;                 /* same as .counselor_details */
   border-radius:6px;                   /* same rounded feel */
   padding:30px;                        /* matches counselor_details padding */
-  border-top:8px solid #982832;        /* same accent bar */
+  
 }
 
 /* Header should look like your other section titles */
@@ -255,7 +255,7 @@ select.form-select {
                   <!-- MAP VIEW -->
                   <div id="freshmanMapView">
                     <div class="map-panel">
-                      <h4 class="mb-2">Where are you from? Click your state.</h4>
+                      <h4 class="mb-2">Where are you from?</h4>
                     
                       <div id="mapStatusLive" class="visually-hidden" aria-live="polite"></div>
                     
@@ -907,7 +907,7 @@ select.form-select {
       // Expose a reset function so selecting Freshman again always resets the view
       function resetFreshmanUI() {
         showMapOnly();
-        setStatus('info', 'Click a state to see its Admissions Counselor');
+        setStatus('info', 'Click your home state to see its Admissions Counselor');
         if (hasCountyControls) {
           indianaControls.hidden = true;
           countySelect.value = '';
