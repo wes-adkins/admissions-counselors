@@ -170,14 +170,14 @@
              <a href="#" id="pathStartOver" class="small text-decoration-none d-hidden">Start over</a>
              <div class="row g-3">
               <div class="col-12 col-md-6">
-                <button class="btn btn-light border option-btn text-start p-3 w-100" type="button" data-step1="first-time">
+                <button class="btn border option-btn text-start p-3 w-100" type="button" data-step1="first-time">
                   <div class="fw-semibold">First-time IWU Student</div>
                   <div class="small text-muted">I am applying for the first time</div>
                 </button>
               </div>
             
               <div class="col-12 col-md-6">
-                <button class="btn btn-light border option-btn text-start p-3 w-100" type="button" data-step1="current-past">
+                <button class="btn border option-btn text-start p-3 w-100" type="button" data-step1="current-past">
                   <div class="fw-semibold">Current or Past IWU Student</div>
                   <div class="small text-muted">I have attended or I am currently enrolled</div>
                 </button>
@@ -605,7 +605,7 @@
   </div>
 
 
-  <script>
+ <script>
   // Stepper UI and freshman map
   (function () {
     const step1 = document.getElementById('step1');
@@ -627,7 +627,6 @@
 
     const pathHeader = document.getElementById('pathHeader');
     const pathHeaderText = document.getElementById('pathHeaderText');
-    const pathStartOver = document.getElementById('pathStartOver');
 
     let path = null;
 
@@ -666,14 +665,14 @@
 
     function setPathHeader(nextPath) {
       if (!nextPath) {
-        pathHeader.classList.add('d-none');
-        pathHeaderText.textContent = 'You have selected';
+        if (pathHeader) pathHeader.classList.add('d-none');
+        if (pathHeaderText) pathHeaderText.textContent = 'You have selected';
         return;
       }
 
       const label = nextPath === 'first-time' ? 'First-time IWU Student' : 'Current or Past IWU Student';
-      pathHeaderText.textContent = 'You have selected ' + label;
-      pathHeader.classList.remove('d-none');
+      if (pathHeaderText) pathHeaderText.textContent = 'You have selected ' + label;
+      if (pathHeader) pathHeader.classList.remove('d-none');
     }
 
     function showStep1() {
@@ -694,6 +693,9 @@
 
       hideAll(resultFirstTime, '[data-ft]');
       hideAll(resultCurrentPast, '[data-cp]');
+
+      // Optional: if you want returning to Step 1 to also reset the freshman map UI
+      if (freshmanMapApi) freshmanMapApi.resetUI();
     }
 
     function showStep2(which) {
@@ -720,9 +722,16 @@
     }
 
     function renderFirstTime(value) {
+      // 2a: only show Clear after a real selection
       clearFirstTime.hidden = !value;
+
       showOne(resultFirstTime, '[data-ft]', 'data-ft', value);
-      if (value === 'freshman') initFreshmanMapOnce();
+
+      // 2: every time freshman is selected or reselected, reset the map UI
+      if (value === 'freshman') {
+        initFreshmanMapOnce();
+        if (freshmanMapApi) freshmanMapApi.resetUI();
+      }
     }
 
     function renderCurrentPast(value) {
@@ -740,15 +749,11 @@
     btnBack.addEventListener('click', showStep1);
     btnRestart.addEventListener('click', showStep1);
 
-    pathStartOver.addEventListener('click', (e) => {
-      e.preventDefault();
-      showStep1();
-    });
-
     clearFirstTime.addEventListener('click', () => {
       firstTimeType.value = '';
       clearFirstTime.hidden = true;
       hideAll(resultFirstTime, '[data-ft]');
+      if (freshmanMapApi) freshmanMapApi.resetUI();
     });
 
     clearCurrentPast.addEventListener('click', () => {
@@ -762,6 +767,7 @@
 
     // Freshman map
     let freshmanMapInitialized = false;
+    let freshmanMapApi = null;
 
     function initFreshmanMapOnce() {
       if (freshmanMapInitialized) return;
@@ -796,7 +802,6 @@
         WV:'West Virginia', WI:'Wisconsin', WY:'Wyoming'
       };
 
-      // State counselor mapping keyed by abbreviation (more reliable than state name)
       const counselorIdByStateAbbr = {
         AL:'counselor5', AK:'counselor13', AZ:'counselor13', AR:'counselor13', CA:'counselor13',
         CO:'counselor13', CT:'counselor5', DE:'counselor5', FL:'counselor5', GA:'counselor5',
@@ -871,6 +876,20 @@
         freshmanMapView.hidden = true;
         freshmanResultView.hidden = false;
       }
+
+      // Expose a reset function so selecting Freshman again always resets the view
+      function resetFreshmanUI() {
+        showMapOnly();
+        setStatus('info', 'Click a state to see its Admissions Counselor');
+        if (hasCountyControls) {
+          indianaControls.hidden = true;
+          countySelect.value = '';
+        }
+      }
+
+      freshmanMapApi = {
+        resetUI: resetFreshmanUI
+      };
 
       function getPhoneLike(text) {
         const m = text.match(/[0-9]{3}-[0-9]{3}-[0-9]{4}/);
@@ -970,7 +989,6 @@
 
         const counselorId = counselorIdByStateAbbr[abbr];
         if (!counselorId) {
-          console.warn('No counselor mapping found for state:', abbr, stateName);
           renderCounselorById('counselor6', 'Admissions Counselor for ' + stateName);
           return;
         }
@@ -985,11 +1003,6 @@
 
           const key = normalizeCountyName(raw);
           const counselorId = counselorIdByIndianaCounty[key] || counselorIdByIndianaCounty[raw] || 'counselor6';
-
-          if (!counselorId || counselorId === 'counselor6') {
-            console.warn('No counselor mapping found for county:', raw, 'normalized:', key);
-          }
-
           renderCounselorById(counselorId, 'Admissions Counselor for ' + key);
         });
       }
@@ -997,11 +1010,11 @@
       backToMap.addEventListener('click', (e) => {
         e.preventDefault();
         showMapOnly();
+        setStatus('info', 'Click a state to see its Admissions Counselor');
       });
 
       resetBtn.addEventListener('click', () => {
-        showMapOnly();
-        setStatus('info', 'Click a state to see its Admissions Counselor');
+        resetFreshmanUI();
       });
 
       async function loadSvg() {
@@ -1055,8 +1068,6 @@
           }
 
           svg.addEventListener('click', (e) => {
-            // The Wikimedia SVG uses nested shapes. Walk up until we find an element
-            // with an id or a title that resolves to a state.
             let node = e.target;
             let abbr = null;
 
@@ -1092,7 +1103,7 @@
           });
 
           setStatus('success', 'Map loaded. ' + detected + ' clickable state elements detected. Click a state.');
-          showMapOnly();
+          resetFreshmanUI();
         } catch (err) {
           setStatus('error', 'Could not load the SVG. Download and host it locally, then update SVG_URL.');
           mapWrap.innerHTML = '';
@@ -1105,6 +1116,7 @@
 
     showStep1();
   })();
-  </script>
+</script>
+
 </body>
 </html>
