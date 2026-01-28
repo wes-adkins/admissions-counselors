@@ -17,73 +17,74 @@
     .step-card { border: 0; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,.06); }
     .option-btn { border-radius: .9rem; }
     .progress-pill { font-size: .85rem; }
+
     /* =============================
        MAP LAYOUT (CLEAN + SAFE)
        ============================= */
 
-/* Wrapper reserves vertical space so SVG never overlaps content above */
-.map-ratio {
-  position: relative;
-  width: 100%;
-  /* Aspect ratio tuned for US map */
-  padding-top: 55%;
-}
-
-/* Map container fills the ratio box */
-#map-wrap {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* SVG scales to fit without overflowing */
-#map-wrap svg {
-  width: 100% !important;
-  height: 100% !important;
-  display: block;
-}
-
-/* State interaction styling */
-#map-wrap svg [id],
-#map-wrap svg path,
-#map-wrap svg polygon,
-#map-wrap svg g {
-  cursor: pointer;
-  transition: fill 120ms ease, opacity 120ms ease;
-}
-
-#map-wrap svg .state-shape {
-  fill: #a6192e !important;
-  outline: none !important;
-}
-
-#map-wrap svg .state-shape:hover {
-  fill: #701d29 !important;
-}
-
-#map-wrap svg .state-shape:focus,
-#map-wrap svg .state-shape:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.max100 { max-width: 100%; border-radius: 5px; }
-
-.counselor_details {
-  background: #f4f4f4;
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
-  padding: 30px;
-  border-top: 8px solid #982832;
-}
-
-.counselor_details strong { font-size: 1.5rem; }
-
-@media (max-width: 600px) {
-  .max100 { margin-bottom: 30px; max-width: 65%; }
-}
+    /* Wrapper reserves vertical space so SVG never overlaps content above */
+    .map-ratio {
+      position: relative;
+      width: 100%;
+      /* Aspect ratio tuned for US map */
+      padding-top: 55%;
     }
+
+    /* Map container fills the ratio box */
+    #map-wrap {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* SVG scales to fit without overflowing */
+    #map-wrap svg {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+
+    /* State interaction styling */
+    #map-wrap svg [id],
+    #map-wrap svg path,
+    #map-wrap svg polygon,
+    #map-wrap svg g {
+      cursor: pointer;
+      transition: fill 120ms ease, opacity 120ms ease;
+    }
+
+    #map-wrap svg .state-shape {
+      fill: #a6192e !important;
+      outline: none !important;
+    }
+
+    #map-wrap svg .state-shape:hover {
+      fill: #701d29 !important;
+    }
+
+    #map-wrap svg .state-shape:focus,
+    #map-wrap svg .state-shape:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    .max100 { max-width: 100%; border-radius: 5px; }
+
+    .counselor_details {
+      background: #f4f4f4;
+      border-bottom-right-radius: 6px;
+      border-bottom-left-radius: 6px;
+      padding: 30px;
+      border-top: 8px solid #982832;
+    }
+
+    .counselor_details strong { font-size: 1.5rem; }
+
+    @media (max-width: 600px) {
+      .max100 { margin-bottom: 30px; max-width: 65%; }
+    }
+
     .muted-note { color: #5b6676; }
 
     /* Simple max-height collapse animation (keeps content in DOM for indexing) */
@@ -100,50 +101,33 @@
       opacity: 1;
     }
 
-  /* Map sizing: keep the full U.S. visible and contained in the card */
-.map-card { overflow: visible; }
+    /* Map sizing: keep the full U.S. visible and contained in the card */
+    .map-card { overflow: visible; }
 
-/* The frame controls the map height so it never overlaps other content */
-.map-frame {
-  width: 100%;
-  height: clamp(240px, 42vw, 560px);
-  position: relative;
-  overflow: hidden;
-}
+    /* The frame controls the map height so it never overlaps other content */
+    .map-frame {
+      width: 100%;
+      height: clamp(240px, 42vw, 560px);
+      position: relative;
+      overflow: hidden;
+    }
 
-#map-wrap {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
+    #map-wrap {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
 
-#map-wrap svg {
-  width: 100% !important;
-  height: 100% !important;
-  display: block;
-  max-width: 100% !important;
-  max-height: 100% !important;
-}
-
-
-    .max100 { max-width: 100%; border-radius: 5px; }
-
-    .counselor_details {
-      background: #f4f4f4;
-      border-bottom-right-radius: 6px;
-      border-bottom-left-radius: 6px;
-      padding: 30px;
-      border-top: 8px solid #982832;
+    #map-wrap svg {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+      max-width: 100% !important;
+      max-height: 100% !important;
     }
 
     .counselor_details i { margin-right: 5px; }
-
-    .counselor_details strong { font-size: 1.5rem; }
-
-    @media (max-width: 600px) {
-      .max100 { margin-bottom: 30px; max-width: 65%; }
-    }
   </style>
 </head>
 
@@ -226,43 +210,42 @@
                 <!-- Freshman Map -->
                 <section data-ft="freshman" class="collapse-animate collapse-hidden" hidden>
 
-  <!-- MAP VIEW -->
-  <div id="freshmanMapView">
-    <div class="card shadow-sm map-card" style="border-radius:1rem;">
-      <div class="card-header d-flex align-items-center justify-content-between" style="border-top-left-radius:1rem;border-top-right-radius:1rem;">
-        <div>
-          <div class="fw-semibold">Where are you from?</div>
-          <div class="text-body-secondary small">Click a state to find your Admissions Counselor</div>
-        </div>
-        <button id="btn-reset" type="button" class="btn btn-outline-secondary btn-sm">Reset</button>
-      </div>
-      <div class="card-body">
-        <div id="map-status" class="alert alert-info py-2 small mb-3">Loading map…</div>
-        <div class="bg-white border rounded p-2 overflow-hidden" style="width:100%;">
-          <div class="map-frame">
-            <div id="map-wrap" aria-label="Clickable map of the United States"></div>
-          </div>
+                  <!-- MAP VIEW -->
+                  <div id="freshmanMapView">
+                    <div class="card shadow-sm map-card" style="border-radius:1rem;">
+                      <div class="card-header d-flex align-items-center justify-content-between" style="border-top-left-radius:1rem;border-top-right-radius:1rem;">
+                        <div>
+                          <div class="fw-semibold">Where are you from?</div>
+                          <div class="text-body-secondary small">Click a state to find your Admissions Counselor</div>
+                        </div>
+                        <button id="btn-reset" type="button" class="btn btn-outline-secondary btn-sm">Reset</button>
+                      </div>
+                      <div class="card-body">
+                        <div id="map-status" class="alert alert-info py-2 small mb-3">Loading map…</div>
+                        <div class="bg-white border rounded p-2 overflow-hidden" style="width:100%;">
+                          <div class="map-frame">
+                            <div id="map-wrap" aria-label="Clickable map of the United States"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-        </div>
-      </div>
-    </div>
-  </div>
+                  <!-- RESULT VIEW -->
+                  <div id="freshmanResultView" hidden>
+                    <a href="#" id="backToMap" class="small text-decoration-none d-inline-block mb-2">← Back to map</a>
 
-  <!-- RESULT VIEW -->
-  <div id="freshmanResultView" hidden>
-    <a href="#" id="backToMap" class="small text-decoration-none d-inline-block mb-2">← Back to map</a>
+                    <div id="freshmanIndianaControls" class="mb-3" hidden>
+                      <label for="freshmanCountySelect" class="form-label fw-semibold">Select your Indiana county</label>
+                      <select id="freshmanCountySelect" class="form-select">
+                        <option value="" selected>Select a county…</option>
+                      </select>
+                    </div>
 
-    <div id="freshmanIndianaControls" class="mb-3" hidden>
-      <label for="freshmanCountySelect" class="form-label fw-semibold">Select your Indiana county</label>
-      <select id="freshmanCountySelect" class="form-select">
-        <option value="" selected>Select a county…</option>
-      </select>
-    </div>
+                    <div id="freshmanResultHost"></div>
+                  </div>
 
-    <div id="freshmanResultHost"></div>
-  </div>
-
-</section>
+                </section>
 
                 <!-- Transfer -->
                 <section data-ft="transfer" class="collapse-animate collapse-hidden" hidden>
@@ -392,7 +375,6 @@
 
               <div id="resultCurrentPast" class="mt-4">
 
-                <!-- Pre-rendered Current/Past Counselor Sections (SEO-safe) -->
                 <section data-cp="readmit" class="collapse-animate collapse-hidden" hidden>
                   <div class="card border-0 bg-light" style="border-radius:1rem;">
                     <div class="card-body p-4">
@@ -812,17 +794,18 @@
         WV:'West Virginia', WI:'Wisconsin', WY:'Wyoming'
       };
 
-      const counselorIdByStateName = {
-        Alabama:'counselor5', Alaska:'counselor13', Arizona:'counselor13', Arkansas:'counselor13', California:'counselor13',
-        Colorado:'counselor13', Connecticut:'counselor5', Delaware:'counselor5', Florida:'counselor5', Georgia:'counselor5',
-        Hawaii:'counselor13', Idaho:'counselor13', Illinois:'counselor13', Indiana:'IN', Iowa:'counselor13', Kansas:'counselor13',
-        Kentucky:'counselor5', Louisiana:'counselor13', Maine:'counselor5', Maryland:'counselor5', Massachusetts:'counselor5',
-        Michigan:'counselor4', Minnesota:'counselor13', Mississippi:'counselor5', Missouri:'counselor13', Montana:'counselor13',
-        Nebraska:'counselor13', Nevada:'counselor13', 'New Hampshire':'counselor5', 'New Jersey':'counselor5', 'New Mexico':'counselor13',
-        'New York':'counselor5', 'North Carolina':'counselor5', 'North Dakota':'counselor13', Ohio:'counselor1', Oklahoma:'counselor13',
-        Oregon:'counselor13', Pennsylvania:'counselor5', 'Rhode Island':'counselor5', 'South Carolina':'counselor5', 'South Dakota':'counselor13',
-        Tennessee:'counselor1', Texas:'counselor13', Utah:'counselor13', Vermont:'counselor5', Virginia:'counselor5', Washington:'counselor13',
-        'West Virginia':'counselor5', Wisconsin:'counselor13', Wyoming:'counselor13'
+      // State counselor mapping keyed by abbreviation (more reliable than state name)
+      const counselorIdByStateAbbr = {
+        AL:'counselor5', AK:'counselor13', AZ:'counselor13', AR:'counselor13', CA:'counselor13',
+        CO:'counselor13', CT:'counselor5', DE:'counselor5', FL:'counselor5', GA:'counselor5',
+        HI:'counselor13', ID:'counselor13', IL:'counselor13', IN:'IN', IA:'counselor13', KS:'counselor13',
+        KY:'counselor5', LA:'counselor13', ME:'counselor5', MD:'counselor5', MA:'counselor5',
+        MI:'counselor4', MN:'counselor13', MS:'counselor5', MO:'counselor13', MT:'counselor13',
+        NE:'counselor13', NV:'counselor13', NH:'counselor5', NJ:'counselor5', NM:'counselor13',
+        NY:'counselor5', NC:'counselor5', ND:'counselor13', OH:'counselor1', OK:'counselor13',
+        OR:'counselor13', PA:'counselor5', RI:'counselor5', SC:'counselor5', SD:'counselor13',
+        TN:'counselor1', TX:'counselor13', UT:'counselor13', VT:'counselor5', VA:'counselor5', WA:'counselor13',
+        WV:'counselor5', WI:'counselor13', WY:'counselor13'
       };
 
       const counselorIdByIndianaCounty = {
@@ -860,6 +843,16 @@
           .replaceAll('>', '&gt;')
           .replaceAll('"', '&quot;')
           .replaceAll("'", '&#039;');
+      }
+
+      function normalizeStateAbbr(abbr) {
+        return String(abbr || '').trim().toUpperCase();
+      }
+
+      function normalizeCountyName(county) {
+        const s = String(county || '').trim();
+        if (!s) return '';
+        return s.toLowerCase().endsWith(' county') ? s : (s + ' County');
       }
 
       function showMapOnly() {
@@ -922,7 +915,8 @@
           getToKnowLink ? '<a class="btn btn-outline-primary" href="' + escapeHtml(getToKnowLink) + '" role="button">Get to Know</a>' : ''
         ].filter(Boolean).join('');
 
-        return (          '<div class="card border-0 bg-light" style="border-radius:1rem;">'
+        return (
+          '<div class="card border-0 bg-light" style="border-radius:1rem;">'
           + '<div class="card-body p-4">'
           + '<div class="h5">' + escapeHtml(headingText) + '</div>'
           + '<div class="d-flex align-items-start gap-3 mt-3">'
@@ -953,7 +947,8 @@
         showResultOnly();
       }
 
-      function showForStateAbbr(abbr) {
+      function showForStateAbbr(abbrRaw) {
+        const abbr = normalizeStateAbbr(abbrRaw);
         const stateName = stateNameByAbbr[abbr];
         if (!stateName) return;
 
@@ -970,16 +965,30 @@
         }
 
         if (hasCountyControls) indianaControls.hidden = true;
-        const counselorId = counselorIdByStateName[stateName] || 'counselor6';
+
+        const counselorId = counselorIdByStateAbbr[abbr];
+        if (!counselorId) {
+          console.warn('No counselor mapping found for state:', abbr, stateName);
+          renderCounselorById('counselor6', 'Admissions Counselor for ' + stateName);
+          return;
+        }
+
         renderCounselorById(counselorId, 'Admissions Counselor for ' + stateName);
       }
 
       if (hasCountyControls) {
         countySelect.addEventListener('change', () => {
-          const county = countySelect.value;
-          if (!county) return;
-          const counselorId = counselorIdByIndianaCounty[county] || 'counselor6';
-          renderCounselorById(counselorId, 'Admissions Counselor for ' + county);
+          const raw = countySelect.value;
+          if (!raw) return;
+
+          const key = normalizeCountyName(raw);
+          const counselorId = counselorIdByIndianaCounty[key] || counselorIdByIndianaCounty[raw] || 'counselor6';
+
+          if (!counselorId || counselorId === 'counselor6') {
+            console.warn('No counselor mapping found for county:', raw, 'normalized:', key);
+          }
+
+          renderCounselorById(counselorId, 'Admissions Counselor for ' + key);
         });
       }
 
@@ -1003,7 +1012,6 @@
           const svg = mapWrap.querySelector('svg');
           if (!svg) throw new Error('SVG did not load correctly');
 
-          // Force responsive sizing (and ensure we do not accidentally crop the map)
           const widthAttr = svg.getAttribute('width');
           const heightAttr = svg.getAttribute('height');
 
@@ -1013,11 +1021,9 @@
             }
           }
 
-          // Remove fixed sizing after we have built a viewBox
           svg.removeAttribute('width');
           svg.removeAttribute('height');
 
-          // Fill the ratio box
           svg.style.width = '100%';
           svg.style.height = '100%';
           svg.style.display = 'block';
@@ -1097,9 +1103,6 @@
 
     showStep1();
   })();
-</script>
+  </script>
 </body>
 </html>
-
-
-
