@@ -112,7 +112,7 @@
     /* The frame controls the map height so it never overlaps other content */
     .map-frame {
       width: 100%;
-      height: clamp(240px, 36vw, 560px);
+      height: clamp(240px, 20vw, 560px);
       position: relative;
       overflow: hidden;
     }
@@ -169,7 +169,39 @@ select.form-select {
   width:100%;
   height:100%;
 }
-    
+
+    /* Smooth crossfade between map and result */
+.view-swap {
+  position: relative;
+}
+
+/* Both panels stack in the same space */
+.view-swap > .swap-panel {
+  position: absolute;
+  inset: 0;
+  transition: opacity 220ms ease, transform 220ms ease;
+  will-change: opacity, transform;
+}
+
+/* Visible panel */
+.swap-panel.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Hidden panel (but still in DOM for animation) */
+.swap-panel.is-inactive {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
+/* Give the swap area a height so it does not collapse */
+.view-swap {
+  min-height: clamp(320px, 44vw, 620px);
+}
+
     
   </style>
 </head>
@@ -252,21 +284,23 @@ select.form-select {
                 <!-- Freshman Map -->
                 <section data-ft="freshman" class="collapse-animate collapse-hidden" hidden>
 
-                  <!-- MAP VIEW -->
-                  <div id="freshmanMapView">
-                    <div class="map-panel">
-                      <h4 class="mb-2">Where are you from?</h4>
-                    
-                      <div id="mapStatusLive" class="visually-hidden" aria-live="polite"></div>
-                    
-                      <div class="map-frame">
-                        <div id="map-wrap" aria-label="Clickable map of the United States"></div>
+                  <div class="view-swap">
+                    <!-- MAP VIEW -->
+                    <div id="freshmanMapView" class="swap-panel is-active">
+                      <div class="map-panel">
+                        <h4 class="mb-2">Where are you from?</h4>
+                      
+                        <div id="mapStatusLive" class="visually-hidden" aria-live="polite"></div>
+                      
+                        <div class="map-frame">
+                          <div id="map-wrap" aria-label="Clickable map of the United States"></div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  
 
                   <!-- RESULT VIEW -->
-                  <div id="freshmanResultView" hidden>
+                  <div id="freshmanResultView" class="swap-panel is-inactive">
                     <a href="#" id="backToMap" class="small text-decoration-none d-inline-block mb-2">← Back to map</a>
 
                     <div id="freshmanIndianaControls" class="mb-3" hidden>
@@ -278,6 +312,8 @@ select.form-select {
 
                     <div id="freshmanResultHost"></div>
                   </div>
+
+                  </div>    
 
                 </section>
 
@@ -890,19 +926,27 @@ select.form-select {
       }
 
       function showMapOnly() {
-        freshmanResultView.hidden = true;
-        freshmanMapView.hidden = false;
+        freshmanMapView.classList.add('is-active');
+        freshmanMapView.classList.remove('is-inactive');
+      
+        freshmanResultView.classList.add('is-inactive');
+        freshmanResultView.classList.remove('is-active');
+      
         resultHost.innerHTML = '';
         if (hasCountyControls) {
           indianaControls.hidden = true;
           countySelect.value = '';
         }
       }
-
+      
       function showResultOnly() {
-        freshmanMapView.hidden = true;
-        freshmanResultView.hidden = false;
+        freshmanResultView.classList.add('is-active');
+        freshmanResultView.classList.remove('is-inactive');
+      
+        freshmanMapView.classList.add('is-inactive');
+        freshmanMapView.classList.remove('is-active');
       }
+
 
       // Expose a reset function so selecting Freshman again always resets the view
       function resetFreshmanUI() {
