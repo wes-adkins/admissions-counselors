@@ -17,61 +17,72 @@
     .step-card { border: 0; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,.06); }
     .option-btn { border-radius: .9rem; }
     .progress-pill { font-size: .85rem; }
-    /* Map container stays responsive and preserves aspect ratio */
-    /* Do not clip the SVG vertically on large screens */
-    .map-card { overflow: visible; }
+    /* =============================
+       MAP LAYOUT (CLEAN + SAFE)
+       ============================= */
 
-    #map-wrap { width: 100%; height: auto; }
+/* Wrapper reserves vertical space so SVG never overlaps content above */
+.map-ratio {
+  position: relative;
+  width: 100%;
+  /* Aspect ratio tuned for US map */
+  padding-top: 55%;
+}
 
-    #map-wrap svg {
-      width: 100%;
-      height: auto;
-      display: block;
-      max-height: none;
-    }
+/* Map container fills the ratio box */
+#map-wrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
 
-    /* Interaction styling */
-    #map-wrap svg [id],
-    #map-wrap svg path,
-    #map-wrap svg polygon,
-    #map-wrap svg g {
-      cursor: pointer;
-      transition: fill 120ms ease, opacity 120ms ease;
-    }
+/* SVG scales to fit without overflowing */
+#map-wrap svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
 
-    /* Default state color */
-    #map-wrap svg .state-shape {
-      fill: #a6192e !important;
-      outline: none !important;
-    }
+/* State interaction styling */
+#map-wrap svg [id],
+#map-wrap svg path,
+#map-wrap svg polygon,
+#map-wrap svg g {
+  cursor: pointer;
+  transition: fill 120ms ease, opacity 120ms ease;
+}
 
-    /* Hover color */
-    #map-wrap svg .state-shape:hover {
-      fill: #701d29 !important;
-      opacity: 1;
-    }
+#map-wrap svg .state-shape {
+  fill: #a6192e !important;
+  outline: none !important;
+}
 
-    /* Remove browser focus ring */
-    #map-wrap svg .state-shape:focus,
-    #map-wrap svg .state-shape:focus-visible {
-      outline: none !important;
-      box-shadow: none !important;
-    }
+#map-wrap svg .state-shape:hover {
+  fill: #701d29 !important;
+}
 
-    .max100 { max-width: 100%; border-radius: 5px; }
+#map-wrap svg .state-shape:focus,
+#map-wrap svg .state-shape:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
 
-    .counselor_details {
-      background: #f4f4f4;
-      border-bottom-right-radius: 6px;
-      border-bottom-left-radius: 6px;
-      padding: 30px;
-      border-top: 8px solid #982832;
-    }
+.max100 { max-width: 100%; border-radius: 5px; }
 
-    .counselor_details strong { font-size: 1.5rem; }
+.counselor_details {
+  background: #f4f4f4;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+  padding: 30px;
+  border-top: 8px solid #982832;
+}
 
-    @media (max-width: 600px) {
-      .max100 { margin-bottom: 30px; max-width: 65%; }
+.counselor_details strong { font-size: 1.5rem; }
+
+@media (max-width: 600px) {
+  .max100 { margin-bottom: 30px; max-width: 65%; }
+}
     }
     .muted-note { color: #5b6676; }
 
@@ -89,41 +100,32 @@
       opacity: 1;
     }
 
-    /* Freshman map styles */
-    .map-card { overflow: visible; }
+  /* Map sizing: keep the full U.S. visible and contained in the card */
+.map-card { overflow: visible; }
 
-    #map-wrap { width: 100%; height: auto; }
+/* The frame controls the map height so it never overlaps other content */
+.map-frame {
+  width: 100%;
+  height: clamp(240px, 42vw, 560px);
+  position: relative;
+  overflow: hidden;
+}
 
-    #map-wrap svg {
-      width: 100%;
-      height: auto;
-      display: block;
-      max-height: none;
-    }
+#map-wrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
 
-    #map-wrap svg [id],
-    #map-wrap svg path,
-    #map-wrap svg polygon,
-    #map-wrap svg g {
-      cursor: pointer;
-      transition: fill 120ms ease, opacity 120ms ease;
-    }
+#map-wrap svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
 
-    #map-wrap svg .state-shape {
-      fill: #a6192e !important;
-      outline: none !important;
-    }
-
-    #map-wrap svg .state-shape:hover {
-      fill: #701d29 !important;
-      opacity: 1;
-    }
-
-    #map-wrap svg .state-shape:focus,
-    #map-wrap svg .state-shape:focus-visible {
-      outline: none !important;
-      box-shadow: none !important;
-    }
 
     .max100 { max-width: 100%; border-radius: 5px; }
 
@@ -147,7 +149,7 @@
 
 <body>
   <header class="brand-bar py-3">
-   
+    <div class="container">
       <div class="d-flex align-items-center justify-content-between gap-3">
         <div>
           <div class="h4 mb-0">Find Your Admissions Counselor</div>
@@ -155,10 +157,10 @@
         </div>
         <button id="btnRestart" class="btn btn-outline-light btn-sm" type="button">Restart</button>
       </div>
-   
+    </div>
   </header>
 
-  <main class="my-4 my-lg-5">
+  <main class="container my-4 my-lg-5">
     <div class="row justify-content-center">
       <div class="col-12 col-lg-9 col-xl-8">
 
@@ -236,8 +238,11 @@
       </div>
       <div class="card-body">
         <div id="map-status" class="alert alert-info py-2 small mb-3">Loading map…</div>
-        <div class="bg-white border rounded p-2">
-          <div id="map-wrap" aria-label="Clickable map of the United States"></div>
+        <div class="bg-white border rounded p-2 overflow-hidden" style="width:100%;">
+          <div class="map-frame">
+            <div id="map-wrap" aria-label="Clickable map of the United States"></div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -246,6 +251,14 @@
   <!-- RESULT VIEW -->
   <div id="freshmanResultView" hidden>
     <a href="#" id="backToMap" class="small text-decoration-none d-inline-block mb-2">← Back to map</a>
+
+    <div id="freshmanIndianaControls" class="mb-3" hidden>
+      <label for="freshmanCountySelect" class="form-label fw-semibold">Select your Indiana county</label>
+      <select id="freshmanCountySelect" class="form-select">
+        <option value="" selected>Select a county…</option>
+      </select>
+    </div>
+
     <div id="freshmanResultHost"></div>
   </div>
 
@@ -433,6 +446,178 @@
       </div>
     </div>
   </main>
+
+  <!-- Counselor data used by the map (keep this in the DOM, but hidden) -->
+  <div class="d-none" aria-hidden="true">
+    <div class="counselor_details" id="counselor1">
+      <div class="row">
+        <div class="col-lg-3 text-center"><img alt="Chase Huffman" class="max100" src="https://www.indwes.edu/admissions/campus/_img/chase-huffman.webp" title="Counselor Photo" /></div>
+        <div class="col-lg-9">
+          <p><strong>Chase Huffman is your Admissions Counselor!</strong></p>
+          <hr />
+          <p><i class="fa-solid fa-envelope"></i> <a href="mailto:chase.huffman@indwes.edu" title="Send Email">chase.huffman@indwes.edu</a></p>
+          <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/chase-huffman-indwes" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+          <p><i class="fa-solid fa-phone"></i> 765-677-1648</p>
+          <p><i class="fa-solid fa-comment-sms"></i> 765-613-3246</p>
+          <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/chase-huffman" title="Get to Know">Get to Know Chase</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="counselor_details" id="counselor3">
+      <div class="row">
+        <div class="col-lg-3 text-center"><img alt="Bedford Fleuriot headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/bedford-fleuriot.webp" title="Counselor Photo" /></div>
+        <div class="col-lg-9">
+          <p><strong>Bedford Fleuriot is your Admissions Counselor!</strong></p>
+          <hr />
+          <p><i class="fa-solid fa-envelope"></i> <a href="mailto:bedford.fleuriot@indwes.edu" title="Send Email">bedford.fleuriot@indwes.edu</a></p>
+          <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/bedford-fleuriot" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+          <p><i class="fa-solid fa-phone"></i> 765-677-1308</p>
+          <p><i class="fa-solid fa-comment-sms"></i> 765-613-3242</p>
+          <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/bedford-fleuriot" title="Get to Know">Get to Know Bedford</a></p>
+          <p class="mt-3"><em>Serving Southern Indiana counties</em></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="counselor_details" id="counselor4">
+      <div class="row">
+        <div class="col-lg-3 text-center"><img alt="Marc Watkins" class="max100" src="https://www.indwes.edu/academics/faculty/_img/headshot-placeholder-red.png" title="Counselor Photo" /></div>
+        <div class="col-lg-9">
+          <p><strong>Marc Watkins is your Admissions Counselor!</strong></p>
+          <hr />
+          <p><i class="fa-solid fa-envelope"></i> <a href="mailto:marc.watkins@indwes.edu" title="Send Email">marc.watkins@indwes.edu</a></p>
+          <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/marc-watkins-indwes/30min" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+          <p><i class="fa-solid fa-phone"></i> 765-677-1307</p>
+          <p><i class="fa-solid fa-comment-sms"></i> 765-613-3113</p>
+          <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/marc-watkins" title="Get to Know">Get to Know Marc</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="counselor_details" id="counselor5">
+      <div class="row">
+        <div class="col-lg-3 text-center"><img alt="Brittany Moser headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/Brittany-Moser-headshot.jpg" title="Counselor Photo" /></div>
+        <div class="col-lg-9">
+          <p><strong>Brittany Moser is your Admissions Counselor!</strong></p>
+          <hr />
+          <p><i class="fa-solid fa-envelope"></i> <a href="mailto:brittany.moser@indwes.edu" title="Send Email">brittany.moser@indwes.edu</a></p>
+          <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://outlook.office.com/bookwithme/user/9c75f0e3006b479d87343b7b33463151%40indwes.edu/meetingtype/65de897c-4845-40e6-b75d-e69b207539c4?anonymous" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+          <p><i class="fa-solid fa-phone"></i> 765-677-2365</p>
+          <p><i class="fa-solid fa-comment-sms"></i> 765-613-3075</p>
+          <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/brittany-moser" title="Get to Know">Get to Know Brittany</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="counselor_details" id="counselor6">
+      Please email us to find your Admissions Counselor! <a href="mailto:admissions@indwes.edu" title="Send Email">admissions@indwes.edu</a>
+    </div>
+
+    <div class="counselor_details" id="counselor7">
+      <div class="row">
+        <div class="col-lg-3 text-center"><img alt="Eleri Vice headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/eleri-vice.webp" title="Counselor Photo" /></div>
+        <div class="col-lg-9">
+          <p><strong>Eleri Vice is your Admissions Counselor!</strong></p>
+          <hr />
+          <p><i class="fa-solid fa-envelope"></i> <a href="mailto:eleri.vice@indwes.edu" title="Send Email">eleri.vice@indwes.edu</a></p>
+          <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/eleri-viceiwu" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+          <p><i class="fa-solid fa-phone"></i> 765-677-2921</p>
+          <p><i class="fa-solid fa-comment-sms"></i> 765-613-3232</p>
+          <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/eleri-vice" title="Get to Know">Get to Know Eleri</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="counselor_details" id="counselor8">
+      <div class="row">
+        <div class="col-lg-3 text-center"><img alt="Scott Ellman headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/scott-ellman.webp" title="Counselor Photo" /></div>
+        <div class="col-lg-9">
+          <p><strong>Scott Ellman is your Admissions Counselor!</strong></p>
+          <hr />
+          <p><i class="fa-solid fa-envelope"></i> <a href="mailto:scott.ellman@indwes.edu" title="Send Email">scott.ellman@indwes.edu</a></p>
+          <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/scott-ellman/iwu-follow-up-phone-call-with-scott-ellman" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+          <p><i class="fa-solid fa-phone"></i> 765-677-2033</p>
+          <p><i class="fa-solid fa-comment-sms"></i> 765-613-3171</p>
+          <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/scott-ellman" title="Get to Know">Get to Know Scott</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="counselor_details" id="counselor9">
+      <div class="row">
+        <div class="col-lg-3 text-center"><img alt="Jim Taylor" class="max100" src="https://www.indwes.edu/academics/faculty/_img/headshot-placeholder-red.png" title="Counselor Photo" /></div>
+        <div class="col-lg-9">
+          <p><strong>Jim Taylor is your Admissions Counselor!</strong></p>
+          <hr />
+          <p><i class="fa-solid fa-envelope"></i> <a href="mailto:jim.taylor@indwes.edu" title="Send Email">jim.taylor@indwes.edu</a></p>
+          <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/jim-taylor-indwes/30min" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+          <p><i class="fa-solid fa-phone"></i> 765-677-2899</p>
+          <p><i class="fa-solid fa-comment-sms"></i> 765-613-3048</p>
+          <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/jim-taylor" title="Get to Know">Get to Know Jim</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="counselor_details" id="counselor10">
+      <div class="row">
+        <div class="col-lg-3 text-center"><img alt="Drew Engels headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/drew-engels.webp" title="Counselor Photo" /></div>
+        <div class="col-lg-9">
+          <p><strong>Drew Engels is your Admissions Counselor!</strong></p>
+          <hr />
+          <p><i class="fa-solid fa-envelope"></i> <a href="mailto:drew.engels@indwes.edu" title="Send Email">drew.engels@indwes.edu</a></p>
+          <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/drew-engels-indwes" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+          <p><i class="fa-solid fa-phone"></i> 765-677-2811</p>
+          <p><i class="fa-solid fa-comment-sms"></i> 765-613-3170</p>
+          <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/drew-engels" title="Get to Know">Get to Know Drew</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="counselor_details" id="counselor11">
+      <div class="row">
+        <div class="col-lg-3 text-center"><img alt="Michael Aronson headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/michael-aronson.webp" title="Counselor Photo" /></div>
+        <div class="col-lg-9">
+          <p><strong>Michael Aronson is your Admissions Counselor!</strong></p>
+          <hr />
+          <p><i class="fa-solid fa-envelope"></i> <a href="mailto:michael.aronson@indwes.edu" title="Send Email">michael.aronson@indwes.edu</a></p>
+          <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/michael-aronson-indwes" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+          <p><i class="fa-solid fa-phone"></i> 765-677-3736</p>
+          <p><i class="fa-solid fa-comment-sms"></i> 765-613-3060</p>
+          <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/michael-aronson" title="Get to Know">Get to Know Michael</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="counselor_details" id="counselor12">
+      <div class="row">
+        <div class="col-lg-3 text-center"><img alt="Bedford Fleuriot headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/bedford-fleuriot.webp" title="Counselor Photo" /></div>
+        <div class="col-lg-9">
+          <p><strong>Bedford Fleuriot is your Admissions Counselor!</strong></p>
+          <hr />
+          <p><i class="fa-solid fa-envelope"></i> <a href="mailto:bedford.fleuriot@indwes.edu" title="Send Email">bedford.fleuriot@indwes.edu</a></p>
+          <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/bedford-fleuriot" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+          <p><i class="fa-solid fa-phone"></i> 765-677-1308</p>
+          <p><i class="fa-solid fa-comment-sms"></i> 765-613-3242</p>
+          <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/bedford-fleuriot" title="Get to Know">Get to Know Bedford</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="counselor_details" id="counselor13">
+      <div class="row">
+        <div class="col-lg-3 text-center"><img alt="Cara Davis headshot placeholder" class="max100" src="https://www.indwes.edu/academics/faculty/_img/headshot-placeholder-red.png" title="Counselor Photo" /></div>
+        <div class="col-lg-9">
+          <p><strong>Cara Davis is your Admissions Counselor!</strong></p>
+          <hr />
+          <p><i class="fa-solid fa-envelope"></i> <a href="mailto:cara.davis@indwes.edu" title="Send Email">cara.davis@indwes.edu</a></p>
+          <p><i class="fa-solid fa-phone"></i> 765-677-2702</p>
+          <p><i class="fa-solid fa-comment-sms"></i> 765-613-3041</p>
+          <p class="mt-3"><em>Serving states west of Indiana</em></p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -698,8 +883,20 @@
       }
 
       function buildCard(sourceEl, headingText) {
-        if (!sourceEl || sourceEl.id === 'counselor6') {
-          return '<div class="card border-0 bg-light" style="border-radius:1rem;"><div class="card-body p-4"><div class="h5">' + escapeHtml(headingText) + '</div><p class="text-muted mb-0">Please email us to find your Admissions Counselor: <a href="mailto:admissions@indwes.edu">admissions@indwes.edu</a></p></div></div>';
+        if (!sourceEl) {
+          return '<div class="card border-0 bg-light" style="border-radius:1rem;">'
+            + '<div class="card-body p-4">'
+            + '<div class="h5">' + escapeHtml(headingText) + '</div>'
+            + '<p class="text-muted mb-0">Counselor information is temporarily unavailable. Please contact <a href="mailto:admissions@indwes.edu">admissions@indwes.edu</a>.</p>'
+            + '</div></div>';
+        }
+
+        if (sourceEl.id === 'counselor6') {
+          return '<div class="card border-0 bg-light" style="border-radius:1rem;">'
+            + '<div class="card-body p-4">'
+            + '<div class="h5">' + escapeHtml(headingText) + '</div>'
+            + '<p class="text-muted mb-0">Please email us to find your Admissions Counselor: <a href="mailto:admissions@indwes.edu">admissions@indwes.edu</a></p>'
+            + '</div></div>';
         }
 
         const img = sourceEl.querySelector('img');
@@ -725,8 +922,7 @@
           getToKnowLink ? '<a class="btn btn-outline-primary" href="' + escapeHtml(getToKnowLink) + '" role="button">Get to Know</a>' : ''
         ].filter(Boolean).join('');
 
-        return (
-          '<div class="card border-0 bg-light" style="border-radius:1rem;">'
+        return (          '<div class="card border-0 bg-light" style="border-radius:1rem;">'
           + '<div class="card-body p-4">'
           + '<div class="h5">' + escapeHtml(headingText) + '</div>'
           + '<div class="d-flex align-items-start gap-3 mt-3">'
@@ -807,6 +1003,26 @@
           const svg = mapWrap.querySelector('svg');
           if (!svg) throw new Error('SVG did not load correctly');
 
+          // Force responsive sizing (and ensure we do not accidentally crop the map)
+          const widthAttr = svg.getAttribute('width');
+          const heightAttr = svg.getAttribute('height');
+
+          if (!svg.getAttribute('viewBox')) {
+            if (widthAttr && heightAttr) {
+              svg.setAttribute('viewBox', '0 0 ' + parseFloat(widthAttr) + ' ' + parseFloat(heightAttr));
+            }
+          }
+
+          // Remove fixed sizing after we have built a viewBox
+          svg.removeAttribute('width');
+          svg.removeAttribute('height');
+
+          // Fill the ratio box
+          svg.style.width = '100%';
+          svg.style.height = '100%';
+          svg.style.display = 'block';
+          svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
           const abbrSet = new Set(Object.keys(stateNameByAbbr));
 
           function resolveAbbrFromId(rawId) {
@@ -831,11 +1047,20 @@
           }
 
           svg.addEventListener('click', (e) => {
-            const target = e.target && e.target.closest ? e.target.closest('path, polygon, g') : null;
-            if (!target) return;
-            let abbr = resolveAbbrFromId(target.getAttribute('id'));
-            if (!abbr) abbr = resolveAbbrFromTitle(target);
+            // The Wikimedia SVG uses nested shapes. Walk up until we find an element
+            // with an id or a title that resolves to a state.
+            let node = e.target;
+            let abbr = null;
+
+            while (node && node !== svg && !abbr) {
+              if (node.getAttribute) {
+                abbr = resolveAbbrFromId(node.getAttribute('id')) || resolveAbbrFromTitle(node);
+              }
+              node = node.parentElement;
+            }
+
             if (!abbr) return;
+
             setStatus('info', 'Selected: ' + stateNameByAbbr[abbr]);
             showForStateAbbr(abbr);
           });
