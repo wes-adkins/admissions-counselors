@@ -793,7 +793,7 @@ select.form-select {
       const countySelect = document.getElementById('freshmanCountySelect');
       const hasCountyControls = Boolean(indianaControls && countySelect);
     
-      if (!mapWrap || !resetBtn || !freshmanMapView || !freshmanResultView || !backToMap || !resultHost) return;
+      if (!mapWrap || !freshmanMapView || !freshmanResultView || !backToMap || !resultHost) return;
     
       freshmanMapInitialized = true;
 
@@ -1020,9 +1020,12 @@ select.form-select {
         setStatus('info', 'Click a state to see its Admissions Counselor');
       });
 
-      resetBtn.addEventListener('click', () => {
-        resetFreshmanUI();
-      });
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          resetFreshmanUI();
+        });
+      }
+
 
       async function loadSvg() {
         setStatus('info', 'Loading map…');
