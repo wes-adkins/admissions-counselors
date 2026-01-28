@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Responsive Clickable US Map - Admissions Counselors</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    /* Map container stays responsive and preserves aspect ratio */
+    /* Do not clip the SVG vertically on large screens */
+    .map-card { overflow: visible; }
+
+    #map-wrap { width: 100%; height: auto; }
+
+    #map-wrap svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: none;
+    }
+
+    /* Interaction styling */
+    #map-wrap svg [id],
+    #map-wrap svg path,
+    #map-wrap svg polygon,
+    #map-wrap svg g {
+      cursor: pointer;
+      transition: fill 120ms ease, opacity 120ms ease;
+    }
+
+    /* Default state color */
+    #map-wrap svg .state-shape {
+      fill: #a6192e !important;
+      outline: none !important;
+    }
+
+    /* Hover color */
+    #map-wrap svg .state-shape:hover {
+      fill: #701d29 !important;
+      opacity: 1;
+    }
+
+    /* Remove browser focus ring (blue outline) on click or keyboard focus */
+    #map-wrap svg .state-shape:focus,
+    #map-wrap svg .state-shape:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Selected state: keep same fill, no extra outline */
+    /* Counselor blocks (reused from your page) (reused from your page) */
+    .max100 { max-width: 100%; border-radius: 5px; }
+
+    .counselor_details {
+      background: #f4f4f4;
+      border-bottom-right-radius: 6px;
+      border-bottom-left-radius: 6px;
+      padding: 30px;
+      border-top: 8px solid #982832;
+    }
+
+    .counselor_details i { margin-right: 5px; }
+
+    .counselor_details strong { font-size: 1.5rem; }
+
+    @media (max-width: 600px) {
+      .max100 { margin-bottom: 30px; max-width: 65%; }
+    }
+  </style>
+</head>
+
+<body class="bg-light">
+  <div class="container py-4">
+    <div class="row g-4">
+      <div class="col-12">
+        <div class="card shadow-sm map-card">
+          <div class="card-header d-flex align-items-center justify-content-between">
+            <div>
+              <div class="fw-semibold">Where are you from?</div>
+              <div class="text-body-secondary small">Click a state to find your Admissions Counselor</div>
+            </div>
+            <button id="btn-reset" type="button" class="btn btn-outline-secondary btn-sm">Reset</button>
+          </div>
+          <div class="card-body">
+            <div id="map-status" class="alert alert-info py-2 small mb-3">Loading map…</div>
+            <div class="bg-white border rounded p-2">
+              <div id="map-wrap" aria-label="Clickable map of the United States"></div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Counselor content can live anywhere on the page.
+         In production, keep your existing counselor HTML and the script will reuse it. -->
+    <div class="d-none" id="counselor-content">
+      <div class="counselor_details" id="counselor1">
+        <div class="row">
+          <div class="col-lg-3 text-center"><img alt="Chase Huffman" class="max100" src="https://www.indwes.edu/admissions/campus/_img/chase-huffman.webp" title="Counselor Photo" /></div>
+          <div class="col-lg-9">
+            <p><strong>Chase Huffman is your Admissions Counselor!</strong></p>
+            <hr />
+            <p><i class="fa-solid fa-envelope"></i> <a href="mailto:chase.huffman@indwes.edu" title="Send Email">chase.huffman@indwes.edu</a></p>
+            <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/chase-huffman-indwes" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+            <p><i class="fa-solid fa-phone"></i> 765-677-1648</p>
+            <p><i class="fa-solid fa-comment-sms"></i> 765-613-3246</p>
+            <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/chase-huffman" title="Get to Know">Get to Know Chase</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="counselor_details" id="counselor3">
+        <div class="row">
+          <div class="col-lg-3 text-center"><img alt="Bedford Fleuriot headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/bedford-fleuriot.webp" title="Counselor Photo" /></div>
+          <div class="col-lg-9">
+            <p><strong>Bedford Fleuriot is your Admissions Counselor!</strong></p>
+            <hr />
+            <p><i class="fa-solid fa-envelope"></i> <a href="mailto:bedford.fleuriot@indwes.edu" title="Send Email">bedford.fleuriot@indwes.edu</a></p>
+            <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/bedford-fleuriot" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+            <p><i class="fa-solid fa-phone"></i> 765-677-1308</p>
+            <p><i class="fa-solid fa-comment-sms"></i> 765-613-3242</p>
+            <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/bedford-fleuriot" title="Get to Know">Get to Know Bedford</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="counselor_details" id="counselor4">
+        <div class="row">
+          <div class="col-lg-3 text-center"><img alt="Marc Watkins" class="max100" src="https://www.indwes.edu/academics/faculty/_img/headshot-placeholder-red.png" title="Counselor Photo" /></div>
+          <div class="col-lg-9">
+            <p><strong>Marc Watkins is your Admissions Counselor!</strong></p>
+            <hr />
+            <p><i class="fa-solid fa-envelope"></i> <a href="mailto:marc.watkins@indwes.edu" title="Send Email">marc.watkins@indwes.edu</a></p>
+            <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/marc-watkins-indwes/30min" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+            <p><i class="fa-solid fa-phone"></i> 765-677-1307</p>
+            <p><i class="fa-solid fa-comment-sms"></i> 765-613-3113</p>
+            <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/marc-watkins" title="Get to Know">Get to Know Marc</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="counselor_details" id="counselor5">
+        <div class="row">
+          <div class="col-lg-3 text-center"><img alt="Brittany Moser headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/Brittany-Moser-headshot.jpg" title="Counselor Photo" /></div>
+          <div class="col-lg-9">
+            <p><strong>Brittany Moser is your Admissions Counselor!</strong></p>
+            <hr />
+            <p><i class="fa-solid fa-envelope"></i> <a href="mailto:brittany.moser@indwes.edu" title="Send Email">brittany.moser@indwes.edu</a></p>
+            <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://outlook.office.com/bookwithme/user/9c75f0e3006b479d87343b7b33463151%40indwes.edu/meetingtype/65de897c-4845-40e6-b75d-e69b207539c4?anonymous" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+            <p><i class="fa-solid fa-phone"></i> 765-677-2365</p>
+            <p><i class="fa-solid fa-comment-sms"></i> 765-613-3075</p>
+            <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/brittany-moser" title="Get to Know">Get to Know Brittany</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="counselor_details" id="counselor6">
+        Please email us to find your Admissions Counselor! <a href="mailto:admissions@indwes.edu" title="Send Email">admissions@indwes.edu</a>
+      </div>
+
+      <div class="counselor_details" id="counselor7">
+        <div class="row">
+          <div class="col-lg-3 text-center"><img alt="Eleri Vice headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/eleri-vice.webp" title="Counselor Photo" /></div>
+          <div class="col-lg-9">
+            <p><strong>Eleri Vice is your Admissions Counselor!</strong></p>
+            <hr />
+            <p><i class="fa-solid fa-envelope"></i> <a href="mailto:eleri.vice@indwes.edu" title="Send Email">eleri.vice@indwes.edu</a></p>
+            <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/eleri-viceiwu" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+            <p><i class="fa-solid fa-phone"></i> 765-677-2921</p>
+            <p><i class="fa-solid fa-comment-sms"></i> 765-613-3232</p>
+            <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/eleri-vice" title="Get to Know">Get to Know Eleri</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="counselor_details" id="counselor8">
+        <div class="row">
+          <div class="col-lg-3 text-center"><img alt="Scott Ellman headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/scott-ellman.webp" title="Counselor Photo" /></div>
+          <div class="col-lg-9">
+            <p><strong>Scott Ellman is your Admissions Counselor!</strong></p>
+            <hr />
+            <p><i class="fa-solid fa-envelope"></i> <a href="mailto:scott.ellman@indwes.edu" title="Send Email">scott.ellman@indwes.edu</a></p>
+            <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/scott-ellman/iwu-follow-up-phone-call-with-scott-ellman" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+            <p><i class="fa-solid fa-phone"></i> 765-677-2033</p>
+            <p><i class="fa-solid fa-comment-sms"></i> 765-613-3171</p>
+            <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/scott-ellman" title="Get to Know">Get to Know Scott</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="counselor_details" id="counselor9">
+        <div class="row">
+          <div class="col-lg-3 text-center"><img alt="Jim Taylor" class="max100" src="https://www.indwes.edu/academics/faculty/_img/headshot-placeholder-red.png" title="Counselor Photo" /></div>
+          <div class="col-lg-9">
+            <p><strong>Jim Taylor is your Admissions Counselor!</strong></p>
+            <hr />
+            <p><i class="fa-solid fa-envelope"></i> <a href="mailto:jim.taylor@indwes.edu" title="Send Email">jim.taylor@indwes.edu</a></p>
+            <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/jim-taylor-indwes/30min" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+            <p><i class="fa-solid fa-phone"></i> 765-677-2899</p>
+            <p><i class="fa-solid fa-comment-sms"></i> 765-613-3048</p>
+            <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/jim-taylor" title="Get to Know">Get to Know Jim</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="counselor_details" id="counselor10">
+        <div class="row">
+          <div class="col-lg-3 text-center"><img alt="Drew Engels headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/drew-engels.webp" title="Counselor Photo" /></div>
+          <div class="col-lg-9">
+            <p><strong>Drew Engels is your Admissions Counselor!</strong></p>
+            <hr />
+            <p><i class="fa-solid fa-envelope"></i> <a href="mailto:drew.engels@indwes.edu" title="Send Email">drew.engels@indwes.edu</a></p>
+            <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/drew-engels-indwes" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+            <p><i class="fa-solid fa-phone"></i> 765-677-2811</p>
+            <p><i class="fa-solid fa-comment-sms"></i> 765-613-3170</p>
+            <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/drew-engels" title="Get to Know">Get to Know Drew</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="counselor_details" id="counselor11">
+        <div class="row">
+          <div class="col-lg-3 text-center"><img alt="Michael Aronson headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/michael-aronson.webp" title="Counselor Photo" /></div>
+          <div class="col-lg-9">
+            <p><strong>Michael Aronson is your Admissions Counselor!</strong></p>
+            <hr />
+            <p><i class="fa-solid fa-envelope"></i> <a href="mailto:michael.aronson@indwes.edu" title="Send Email">michael.aronson@indwes.edu</a></p>
+            <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/michael-aronson-indwes" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+            <p><i class="fa-solid fa-phone"></i> 765-677-3736</p>
+            <p><i class="fa-solid fa-comment-sms"></i> 765-613-3060</p>
+            <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/michael-aronson" title="Get to Know">Get to Know Michael</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="counselor_details" id="counselor12">
+        <div class="row">
+          <div class="col-lg-3 text-center"><img alt="Bedford Fleuriot headshot" class="max100" src="https://www.indwes.edu/admissions/campus/_img/bedford-fleuriot.webp" title="Counselor Photo" /></div>
+          <div class="col-lg-9">
+            <p><strong>Bedford Fleuriot is your Admissions Counselor!</strong></p>
+            <hr />
+            <p><i class="fa-solid fa-envelope"></i> <a href="mailto:bedford.fleuriot@indwes.edu" title="Send Email">bedford.fleuriot@indwes.edu</a></p>
+            <p><i class="fa-solid fa-calendar-plus"></i> <a href="https://calendly.com/bedford-fleuriot" rel="noopener" target="_blank" title="Schedule a Chat">Schedule a Quick Chat (phone or virtual)</a></p>
+            <p><i class="fa-solid fa-phone"></i> 765-677-1308</p>
+            <p><i class="fa-solid fa-comment-sms"></i> 765-613-3242</p>
+            <p><i class="fa-solid fa-arrow-up-right-from-square"></i> <a href="https://www.indwes.edu/admissions/campus/admissions-counselors/bedford-fleuriot" title="Get to Know">Get to Know Bedford</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="counselor_details" id="select_county">Indiana selected. Please choose a county.</div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="counselorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">Admissions Counselor</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="modalIndianaControls" class="d-none">
+            <div class="mb-3">
+              <label for="modalCountySelect" class="form-label fw-semibold">Select your Indiana county</label>
+              <select id="modalCountySelect" class="form-select">
+                <option value="" selected>Select a county…</option>
+              </select>
+            </div>
+            <hr class="my-3" />
+          </div>
+
+          <div id="modalCounselorHost"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const SVG_URL = "https://upload.wikimedia.org/wikipedia/commons/1/1a/Blank_US_Map_%28states_only%29.svg";
+
+    const statusEl = document.getElementById("map-status");
+    const mapWrap = document.getElementById("map-wrap");
+    const resetBtn = document.getElementById("btn-reset");
+
+    const modalEl = document.getElementById("counselorModal");
+    const modal = new bootstrap.Modal(modalEl);
+
+    const modalTitle = document.getElementById("modalTitle");
+    const modalCounselorHost = document.getElementById("modalCounselorHost");
+    const modalIndianaControls = document.getElementById("modalIndianaControls");
+    const modalCountySelect = document.getElementById("modalCountySelect");
+
+    let selectedStateEl = null;
+
+    function setStatus(kind, text) {
+      statusEl.className = "alert py-2 small mb-3";
+      statusEl.classList.add(kind === "error" ? "alert-danger" : kind === "success" ? "alert-success" : "alert-info");
+      statusEl.textContent = text;
+    }
+
+    function clearSelectedState() {
+      if (selectedStateEl) selectedStateEl.classList.remove("is-selected");
+      selectedStateEl = null;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function cloneCounselorIntoModal(counselorId) {
+      modalCounselorHost.innerHTML = "";
+
+      const source = document.getElementById(counselorId);
+      if (!source) {
+        modalCounselorHost.innerHTML = `
+          <div class="alert alert-warning mb-0">
+            We could not find counselor content for <strong>${escapeHtml(counselorId)}</strong>.
+          </div>
+        `;
+        return;
+      }
+
+      const clone = source.cloneNode(true);
+      clone.style.display = "block";
+      modalCounselorHost.appendChild(clone);
+    }
+
+    // Your assignments (state name -> counselorId or "IN")
+    const counselorIdByStateName = {
+      "Alabama":"counselor5",
+      "Alaska":"counselor3",
+      "Arizona":"counselor3",
+      "Arkansas":"counselor3",
+      "California":"counselor3",
+      "Colorado":"counselor3",
+      "Connecticut":"counselor5",
+      "Delaware":"counselor5",
+      "Florida":"counselor5",
+      "Georgia":"counselor5",
+      "Hawaii":"counselor3",
+      "Idaho":"counselor3",
+      "Illinois":"counselor3",
+      "Indiana":"IN",
+      "Iowa":"counselor3",
+      "Kansas":"counselor3",
+      "Kentucky":"counselor5",
+      "Louisiana":"counselor3",
+      "Maine":"counselor5",
+      "Maryland":"counselor5",
+      "Massachusetts":"counselor5",
+      "Michigan":"counselor4",
+      "Minnesota":"counselor3",
+      "Mississippi":"counselor5",
+      "Missouri":"counselor3",
+      "Montana":"counselor3",
+      "Nebraska":"counselor3",
+      "Nevada":"counselor3",
+      "New Hampshire":"counselor5",
+      "New Jersey":"counselor5",
+      "New Mexico":"counselor3",
+      "New York":"counselor5",
+      "North Carolina":"counselor5",
+      "North Dakota":"counselor3",
+      "Ohio":"counselor1",
+      "Oklahoma":"counselor3",
+      "Oregon":"counselor3",
+      "Pennsylvania":"counselor5",
+      "Rhode Island":"counselor5",
+      "South Carolina":"counselor5",
+      "South Dakota":"counselor3",
+      "Tennessee":"counselor1",
+      "Texas":"counselor3",
+      "Utah":"counselor3",
+      "Vermont":"counselor5",
+      "Virginia":"counselor5",
+      "Washington":"counselor3",
+      "West Virginia":"counselor5",
+      "Wisconsin":"counselor3",
+      "Wyoming":"counselor3"
+    };
+
+    // Indiana county assignments (county label -> counselorId)
+    const counselorIdByIndianaCounty = {
+      "Adams County":"counselor9",
+      "Allen County":"counselor9",
+      "Bartholomew County":"counselor12",
+      "Benton County":"counselor11",
+      "Blackford County":"counselor7",
+      "Boone County":"counselor11",
+      "Brown County":"counselor12",
+      "Carroll County":"counselor10",
+      "Cass County":"counselor10",
+      "Clark County":"counselor12",
+      "Clay County":"counselor12",
+      "Clinton County":"counselor11",
+      "Crawford County":"counselor12",
+      "Daviess County":"counselor12",
+      "Dearborn County":"counselor12",
+      "Decatur County":"counselor12",
+      "DeKalb County":"counselor9",
+      "Delaware County":"counselor11",
+      "Dubois County":"counselor12",
+      "Elkhart County":"counselor10",
+      "Fayette County":"counselor11",
+      "Floyd County":"counselor12",
+      "Fountain County":"counselor11",
+      "Franklin County":"counselor11",
+      "Fulton County":"counselor10",
+      "Gibson County":"counselor12",
+      "Grant County":"counselor7",
+      "Greene County":"counselor12",
+      "Hamilton County":"counselor8",
+      "Hancock County":"counselor8",
+      "Harrison County":"counselor12",
+      "Hendricks County":"counselor8",
+      "Henry County":"counselor11",
+      "Howard County":"counselor7",
+      "Huntington County":"counselor9",
+      "Jackson County":"counselor12",
+      "Jasper County":"counselor10",
+      "Jay County":"counselor9",
+      "Jefferson County":"counselor12",
+      "Jennings County":"counselor12",
+      "Johnson County":"counselor8",
+      "Knox County":"counselor12",
+      "Kosciusko County":"counselor10",
+      "LaGrange County":"counselor9",
+      "Lake County":"counselor10",
+      "LaPorte County":"counselor10",
+      "Lawrence County":"counselor12",
+      "Madison County":"counselor11",
+      "Marion County":"counselor8",
+      "Marshall County":"counselor10",
+      "Martin County":"counselor12",
+      "Miami County":"counselor7",
+      "Monroe County":"counselor12",
+      "Montgomery County":"counselor11",
+      "Morgan County":"counselor11",
+      "Newton County":"counselor10",
+      "Noble County":"counselor9",
+      "Ohio County":"counselor12",
+      "Orange County":"counselor12",
+      "Owen County":"counselor12",
+      "Parke County":"counselor11",
+      "Perry County":"counselor12",
+      "Pike County":"counselor12",
+      "Porter County":"counselor10",
+      "Posey County":"counselor12",
+      "Pulaski County":"counselor10",
+      "Putnam County":"counselor11",
+      "Randolph County":"counselor11",
+      "Ripley County":"counselor12",
+      "Rush County":"counselor11",
+      "St. Joseph County":"counselor10",
+      "Scott County":"counselor12",
+      "Shelby County":"counselor8",
+      "Spencer County":"counselor12",
+      "Starke County":"counselor10",
+      "Steuben County":"counselor9",
+      "Sullivan County":"counselor12",
+      "Switzerland County":"counselor12",
+      "Tippecanoe County":"counselor11",
+      "Tipton County":"counselor11",
+      "Union County":"counselor11",
+      "Vanderburgh County":"counselor12",
+      "Vermillion County":"counselor11",
+      "Vigo County":"counselor12",
+      "Wabash County":"counselor7",
+      "Warren County":"counselor11",
+      "Warrick County":"counselor12",
+      "Washington County":"counselor12",
+      "Wayne County":"counselor11",
+      "Wells County":"counselor9",
+      "White County":"counselor10",
+      "Whitley County":"counselor9"
+    };
+
+    const stateNameByAbbr = {
+      AL:"Alabama", AK:"Alaska", AZ:"Arizona", AR:"Arkansas", CA:"California", CO:"Colorado", CT:"Connecticut",
+      DE:"Delaware", FL:"Florida", GA:"Georgia", HI:"Hawaii", ID:"Idaho", IL:"Illinois", IN:"Indiana",
+      IA:"Iowa", KS:"Kansas", KY:"Kentucky", LA:"Louisiana", ME:"Maine", MD:"Maryland", MA:"Massachusetts",
+      MI:"Michigan", MN:"Minnesota", MS:"Mississippi", MO:"Missouri", MT:"Montana", NE:"Nebraska", NV:"Nevada",
+      NH:"New Hampshire", NJ:"New Jersey", NM:"New Mexico", NY:"New York", NC:"North Carolina", ND:"North Dakota",
+      OH:"Ohio", OK:"Oklahoma", OR:"Oregon", PA:"Pennsylvania", RI:"Rhode Island", SC:"South Carolina",
+      SD:"South Dakota", TN:"Tennessee", TX:"Texas", UT:"Utah", VT:"Vermont", VA:"Virginia", WA:"Washington",
+      WV:"West Virginia", WI:"Wisconsin", WY:"Wyoming"
+    };
+
+    function buildCountyOptions(selectEl) {
+      const counties = Object.keys(counselorIdByIndianaCounty).sort((a, b) => a.localeCompare(b));
+      selectEl.innerHTML = [
+        '<option value="" selected>Select a county…</option>',
+        ...counties.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`)
+      ].join("");
+    }
+
+    function showForStateAbbr(stateAbbr) {
+      const stateName = stateNameByAbbr[stateAbbr];
+      if (!stateName) return;
+
+      modalTitle.textContent = `Admissions Counselor for ${stateName}`;
+
+      if (stateAbbr === "IN") {
+        modalIndianaControls.classList.remove("d-none");
+        buildCountyOptions(modalCountySelect);
+        modalCountySelect.value = "";
+
+        cloneCounselorIntoModal("select_county");
+        modal.show();
+        return;
+      }
+
+      modalIndianaControls.classList.add("d-none");
+
+      const counselorId = counselorIdByStateName[stateName] || "counselor6";
+      cloneCounselorIntoModal(counselorId);
+      modal.show();
+    }
+
+    function handleIndianaCounty(countyLabel) {
+      const counselorId = counselorIdByIndianaCounty[countyLabel] || "counselor6";
+      cloneCounselorIntoModal(counselorId);
+    }
+
+    modalCountySelect.addEventListener("change", () => {
+      const county = modalCountySelect.value;
+      if (county) handleIndianaCounty(county);
+    });
+
+    resetBtn.addEventListener("click", () => {
+      clearSelectedState();
+      setStatus("info", "Click a state to see its Admissions Counselor");
+    });
+
+    async function loadSvg() {
+      setStatus("info", "Loading map…");
+
+      try {
+        const res = await fetch(SVG_URL, { mode: "cors" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const svgText = await res.text();
+        mapWrap.innerHTML = svgText;
+
+        const svg = mapWrap.querySelector("svg");
+        if (!svg) throw new Error("SVG did not load correctly");
+
+        if (!svg.getAttribute("viewBox")) {
+          const w = svg.getAttribute("width");
+          const h = svg.getAttribute("height");
+          if (w && h) svg.setAttribute("viewBox", `0 0 ${parseFloat(w)} ${parseFloat(h)}`);
+        }
+
+        wireUpStates(svg);
+
+      } catch (err) {
+        setStatus("error", "Could not load the SVG. Download and host it locally, then update SVG_URL.");
+        mapWrap.innerHTML = "";
+        console.error(err);
+      }
+    }
+
+    function wireUpStates(svg) {
+      svg.querySelectorAll('[fill="none"]:not([id]), [fill="none"]:not([id]) *').forEach(el => {
+        el.style.pointerEvents = 'none';
+      });
+
+      const abbrSet = new Set(Object.keys(stateNameByAbbr));
+
+      function resolveAbbrFromId(rawId) {
+        if (!rawId) return null;
+        const upper = rawId.trim().toUpperCase();
+        if (abbrSet.has(upper)) return upper;
+        if (upper.startsWith('US-') && abbrSet.has(upper.slice(3))) return upper.slice(3);
+        if (upper.startsWith('US_') && abbrSet.has(upper.slice(3))) return upper.slice(3);
+        const last2 = upper.slice(-2);
+        if (abbrSet.has(last2)) return last2;
+        return null;
+      }
+
+      function resolveAbbrFromTitle(el) {
+        const titleEl = el && el.querySelector ? el.querySelector('title') : null;
+        if (!titleEl) return null;
+        const name = titleEl.textContent.trim();
+        for (const [abbr, stateName] of Object.entries(stateNameByAbbr)) {
+          if (stateName === name) return abbr;
+        }
+        return null;
+      }
+
+      svg.addEventListener('click', (e) => {
+        const target = e.target && e.target.closest ? e.target.closest('path, polygon, g') : null;
+        if (!target) return;
+
+        let abbr = resolveAbbrFromId(target.getAttribute('id'));
+        if (!abbr) abbr = resolveAbbrFromTitle(target);
+
+        if (!abbr) {
+          setStatus('info', 'Click detected, but no state could be resolved at that point.');
+          return;
+        }
+
+        clearSelectedState();
+        selectedStateEl = target;
+        selectedStateEl.classList.add('is-selected');
+        // Prevent the browser focus ring from showing on click
+        if (selectedStateEl.blur) selectedStateEl.blur();
+
+        setStatus('info', `Selected: ${stateNameByAbbr[abbr]}`);
+        showForStateAbbr(abbr);
+      });
+
+      let detected = 0;
+      svg.querySelectorAll('path, polygon, g').forEach(el => {
+        let abbr = resolveAbbrFromId(el.getAttribute('id'));
+        if (!abbr) abbr = resolveAbbrFromTitle(el);
+        if (!abbr) return;
+
+        detected += 1;
+
+        // Mark as a state shape and apply the default fill color.
+        el.classList.add('state-shape');
+        // If this is a group, ensure its child paths are filled as well.
+        if (el.tagName && el.tagName.toLowerCase() === 'g') {
+          el.querySelectorAll('path, polygon').forEach(child => child.classList.add('state-shape'));
+        }
+
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        el.setAttribute('aria-label', `State: ${stateNameByAbbr[abbr]}`);
+        el.addEventListener('keydown', (evt) => {
+          if (evt.key === 'Enter' || evt.key === ' ') {
+            evt.preventDefault();
+            el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+          }
+        });
+      });
+
+      setStatus('success', `Map loaded. ${detected} clickable state elements detected. Click a state.`);
+    }
+
+    function runSelfTests() {
+      console.assert(!!statusEl, 'statusEl exists');
+      console.assert(!!mapWrap, 'mapWrap exists');
+      console.assert(!!modalEl, 'modalEl exists');
+      console.assert(!!modalCountySelect, 'modalCountySelect exists');
+      console.assert(Object.keys(stateNameByAbbr).length >= 50, 'stateNameByAbbr has many entries');
+      console.assert(counselorIdByStateName.Indiana === 'IN', 'Indiana uses county flow');
+      console.assert(Object.keys(counselorIdByIndianaCounty).length > 80, 'Indiana counties loaded');
+    }
+
+    runSelfTests();
+    loadSvg();
+  </script>
+</body>
+</html>
