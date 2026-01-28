@@ -177,7 +177,6 @@ select.form-select {
               <p class="muted-note mb-4">Choose the option that best fits your situation.</p>
 
             
-             <a href="#" id="pathStartOver" class="small text-decoration-none d-hidden">Start over</a>
              <div class="row g-3">
               <div class="col-12 col-md-6">
                 <button class="btn border option-btn text-start p-3 w-100" type="button" data-step1="first-time">
@@ -781,22 +780,21 @@ select.form-select {
 
     function initFreshmanMapOnce() {
       if (freshmanMapInitialized) return;
-
+    
       const mapWrap = document.getElementById('map-wrap');
-      const statusEl = document.getElementById('map-status');
       const resetBtn = document.getElementById('btn-reset');
-
+    
       const freshmanMapView = document.getElementById('freshmanMapView');
       const freshmanResultView = document.getElementById('freshmanResultView');
       const backToMap = document.getElementById('backToMap');
       const resultHost = document.getElementById('freshmanResultHost');
-
+    
       const indianaControls = document.getElementById('freshmanIndianaControls');
       const countySelect = document.getElementById('freshmanCountySelect');
       const hasCountyControls = Boolean(indianaControls && countySelect);
-
-      if (!mapWrap || !statusEl || !resetBtn || !freshmanMapView || !freshmanResultView || !backToMap || !resultHost) return;
-
+    
+      if (!mapWrap || !resetBtn || !freshmanMapView || !freshmanResultView || !backToMap || !resultHost) return;
+    
       freshmanMapInitialized = true;
 
       const SVG_URL = 'https://upload.wikimedia.org/wikipedia/commons/1/1a/Blank_US_Map_%28states_only%29.svg';
