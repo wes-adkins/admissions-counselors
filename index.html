@@ -142,6 +142,34 @@ select.form-select {
     width: 95%;
 }
 
+
+/* Map container styled like counselor cards */
+.map-panel{
+  background:#f4f4f4;                 /* same as .counselor_details */
+  border-radius:6px;                   /* same rounded feel */
+  padding:30px;                        /* matches counselor_details padding */
+  border-top:8px solid #982832;        /* same accent bar */
+}
+
+/* Header should look like your other section titles */
+.map-panel h4{
+  margin:0 0 12px 0;
+  font-weight:600;
+}
+
+/* Keep map contained, but do not change SVG colors */
+.map-frame{
+  background:transparent;              /* background is handled by .map-panel */
+  border-radius:6px;
+  overflow:hidden;
+}
+
+/* Give the SVG a little breathing room without a white card */
+#map-wrap{
+  width:100%;
+  height:100%;
+}
+    
     
   </style>
 </head>
@@ -226,21 +254,13 @@ select.form-select {
 
                   <!-- MAP VIEW -->
                   <div id="freshmanMapView">
-                    <div class="card shadow-sm map-card" style="border-radius:1rem;">
-                      <div class="card-header d-flex align-items-center justify-content-between" style="border-top-left-radius:1rem;border-top-right-radius:1rem;">
-                        <div>
-                          <div class="fw-semibold">Where are you from?</div>
-                          <div class="text-body-secondary small">Click a state to find your Admissions Counselor</div>
-                        </div>
-                       <!-- <button id="btn-reset" type="button">Reset Map</button>-->
-                      </div>
-                      <div class="card-body">
-                        <div id="mapStatusLive" class="visually-hidden" aria-live="polite"></div>
-                        <div class="bg-white rounded p-2 overflow-hidden" style="width:100%;">
-                          <div class="map-frame">
-                            <div id="map-wrap" aria-label="Clickable map of the United States"></div>
-                          </div>
-                        </div>
+                    <div class="map-panel">
+                      <h4 class="mb-2">Where are you from? Click your state.</h4>
+                    
+                      <div id="mapStatusLive" class="visually-hidden" aria-live="polite"></div>
+                    
+                      <div class="map-frame">
+                        <div id="map-wrap" aria-label="Clickable map of the United States"></div>
                       </div>
                     </div>
                   </div>
