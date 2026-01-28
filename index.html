@@ -112,7 +112,7 @@
     /* The frame controls the map height so it never overlaps other content */
     .map-frame {
       width: 100%;
-      height: clamp(240px, 42vw, 560px);
+      height: clamp(240px, 36vw, 560px);
       position: relative;
       overflow: hidden;
     }
@@ -232,11 +232,11 @@ select.form-select {
                           <div class="fw-semibold">Where are you from?</div>
                           <div class="text-body-secondary small">Click a state to find your Admissions Counselor</div>
                         </div>
-                        <button id="btn-reset" type="button">Reset Map</button>
+                       <!-- <button id="btn-reset" type="button">Reset Map</button>-->
                       </div>
                       <div class="card-body">
                         <div id="mapStatusLive" class="visually-hidden" aria-live="polite"></div>
-                        <div class="bg-white border rounded p-2 overflow-hidden" style="width:100%;">
+                        <div class="bg-white rounded p-2 overflow-hidden" style="width:100%;">
                           <div class="map-frame">
                             <div id="map-wrap" aria-label="Clickable map of the United States"></div>
                           </div>
@@ -383,7 +383,7 @@ select.form-select {
                   </select>
                 </div>
                 <div class="col-auto">
-                  <button id="clearCurrentPast" type="button" hidden>Clear</button>
+                  <button id="clearCurrentPast" type="button" class="btn btn-outline-primary" hidden>Clear</button>
                 </div>
               </div>
 
