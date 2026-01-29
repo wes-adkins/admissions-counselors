@@ -117,6 +117,10 @@
       overflow: hidden;
     }
 
+    @media (max-width: 600px){
+      .map-frame{ display:none; } /* dropdown only */
+    }
+    
     #map-wrap {
       position: absolute;
       inset: 0;
@@ -141,6 +145,7 @@ select.form-select {
     padding: 12px;
     width: 95%;
 }
+
 
 
 /* Map container styled like counselor cards */
@@ -300,7 +305,7 @@ select.form-select {
                       
                         <div id="mapStatusLive" class="visually-hidden" aria-live="polite"></div>
 
-                        <div class="d-md-none mb-3">
+                        <div class="d-md-none my-3">
                           <label for="mobileStateSelect" class="form-label fw-semibold">Select your state</label>
                           <select id="mobileStateSelect" class="form-select">
                             <option value="" selected>Select your state…</option>
@@ -886,7 +891,7 @@ select.form-select {
       if (mobileStateSelect) {
         const abbrs = Object.keys(stateNameByAbbr).sort((a,b)=>stateNameByAbbr[a].localeCompare(stateNameByAbbr[b]));
         mobileStateSelect.innerHTML =
-          '<option value="" selected>Select a state…</option>' +
+          '<option value="" selected>Select your state…</option>' +
           abbrs.map(a => '<option value="' + a + '">' + stateNameByAbbr[a] + '</option>').join('');
       
         mobileStateSelect.addEventListener('change', () => {
